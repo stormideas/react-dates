@@ -50,6 +50,7 @@ export default function getVisibleDays(
         ) {
           const nextDay = currentDay.clone().add(count, 'day');
           visibleDays.push(nextDay);
+        }
       }
     }
 
