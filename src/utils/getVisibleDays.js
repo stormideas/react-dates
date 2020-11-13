@@ -41,17 +41,15 @@ export default function getVisibleDays(
     if (enableOutsideDays) {
       // weekday() returns the index of the day of the week according to the locale
       // this means if the week starts on Monday, weekday() will return 0 for a Monday date, not 1
-      if (currentDay.weekday() !== 0) {
-        if (((currentDay.weekday() + 7 - firstDayOfWeekDiff) % 7) !== 0) {
-          // days belonging to the next month
-          for (
-            let k = ((currentDay.weekday() + 7 - firstDayOfWeekDiff) % 7), count = 0;
-            k < 7;
-            k += 1, count += 1
-          ) {
-            const nextDay = currentDay.clone().add(count, 'day');
-            visibleDays.push(nextDay);
-        }
+      if (((currentDay.weekday() + 7 - firstDayOfWeekDiff) % 7) !== 0) {
+        // days belonging to the next month
+        for (
+          let k = ((currentDay.weekday() + 7 - firstDayOfWeekDiff) % 7), count = 0;
+          k < 7;
+          k += 1, count += 1
+        ) {
+          const nextDay = currentDay.clone().add(count, 'day');
+          visibleDays.push(nextDay);
       }
     }
 
