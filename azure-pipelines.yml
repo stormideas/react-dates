@@ -1,0 +1,59 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+      - develop
+      - feature/*
+      - release/*
+      - hotfix/*
+
+pr: none
+
+jobs:
+  - job: Build_And_Publish
+    pool:
+      vmImage: "ubuntu-latest"
+    steps:
+      - task: UseGitVersion@5
+        displayName: "Establish Version"
+        name: "Version"
+        inputs:
+          runtime: "core"
+          versionSpec: "5.x"
+          configFilePath: "GitVersion.yml"
+
+      - task: VersionJSONFile@2
+        inputs:
+          Path: "$(Build.SourcesDirectory)"
+          recursion: true
+          VersionNumber: "$(Build.BuildNumber)"
+          useBuildNumberDirectly: true
+          FilenamePattern: "package.json"
+          OutputVersion: "OutputedVersion"
+
+      - task: NodeTool@0
+        displayName: "Install Node"
+        inputs:
+          versionSpec: "12.x"
+
+      - task: Npm@1
+        displayName: "NPM Install"
+        inputs:
+          command: "install"
+
+      - task: Npm@1
+        displayName: "Build Package"
+        inputs:
+          command: "custom"
+          customCommand: "run build"
+
+      - task: "ArchiveFiles@2"
+        displayName: "ZIP Packages"
+        inputs:
+          rootFolderOrFile: "$(System.DefaultWorkingDirectory)"
+          includeRootFolder: false
+          archiveFile: "$(Build.ArtifactStagingDirectory)/FrontEndBuild.zip"
+
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Artifacts"
