@@ -1,12 +1,16 @@
-import isDayVisible from './isDayVisible';
-import toISODateString from './toISODateString';
-import toISOMonthString from './toISOMonthString';
-import getPreviousMonthMemoLast from './getPreviousMonthMemoLast';
+import isDayVisible from "./isDayVisible";
+import toISODateString from "./toISODateString";
+import toISOMonthString from "./toISOMonthString";
+import getPreviousMonthMemoLast from "./getPreviousMonthMemoLast";
 
-import { VERTICAL_SCROLLABLE } from '../constants';
+import { VERTICAL_SCROLLABLE } from "../constants";
 
 export function addModifier(updatedDays, day, modifier, props, state) {
-  const { numberOfMonths: numberOfVisibleMonths, enableOutsideDays, orientation } = props;
+  const {
+    numberOfMonths: numberOfVisibleMonths,
+    enableOutsideDays,
+    orientation,
+  } = props;
   const { currentMonth: firstVisibleMonth, visibleDays } = state;
 
   let currentMonth = firstVisibleMonth;
@@ -17,7 +21,10 @@ export function addModifier(updatedDays, day, modifier, props, state) {
     currentMonth = getPreviousMonthMemoLast(currentMonth);
     numberOfMonths += 2;
   }
-  if (!day || !isDayVisible(day, currentMonth, numberOfMonths, enableOutsideDays)) {
+  if (
+    !day ||
+    !isDayVisible(day, currentMonth, numberOfMonths, enableOutsideDays)
+  ) {
     return updatedDays;
   }
 
@@ -25,9 +32,9 @@ export function addModifier(updatedDays, day, modifier, props, state) {
 
   let updatedDaysAfterAddition = { ...updatedDays };
   if (enableOutsideDays) {
-    const monthsToUpdate = Object.keys(visibleDays).filter((monthKey) => (
-      Object.keys(visibleDays[monthKey]).indexOf(iso) > -1
-    ));
+    const monthsToUpdate = Object.keys(visibleDays).filter(
+      (monthKey) => Object.keys(visibleDays[monthKey]).indexOf(iso) > -1
+    );
 
     updatedDaysAfterAddition = monthsToUpdate.reduce((acc, monthIso) => {
       const month = updatedDays[monthIso] || visibleDays[monthIso];
@@ -61,7 +68,11 @@ export function addModifier(updatedDays, day, modifier, props, state) {
 }
 
 export function deleteModifier(updatedDays, day, modifier, props, state) {
-  const { numberOfMonths: numberOfVisibleMonths, enableOutsideDays, orientation } = props;
+  const {
+    numberOfMonths: numberOfVisibleMonths,
+    enableOutsideDays,
+    orientation,
+  } = props;
   const { currentMonth: firstVisibleMonth, visibleDays } = state;
 
   let currentMonth = firstVisibleMonth;
@@ -72,7 +83,7 @@ export function deleteModifier(updatedDays, day, modifier, props, state) {
     currentMonth = getPreviousMonthMemoLast(currentMonth);
     numberOfMonths += 2;
   }
-  if (!day || !isDayVisible(day, currentMonth, numberOfMonths, enableOutsideDays)) {
+  if (!day) {
     return updatedDays;
   }
 
@@ -80,9 +91,9 @@ export function deleteModifier(updatedDays, day, modifier, props, state) {
 
   let updatedDaysAfterDeletion = { ...updatedDays };
   if (enableOutsideDays) {
-    const monthsToUpdate = Object.keys(visibleDays).filter((monthKey) => (
-      Object.keys(visibleDays[monthKey]).indexOf(iso) > -1
-    ));
+    const monthsToUpdate = Object.keys(visibleDays).filter(
+      (monthKey) => Object.keys(visibleDays[monthKey]).indexOf(iso) > -1
+    );
 
     updatedDaysAfterDeletion = monthsToUpdate.reduce((acc, monthIso) => {
       const month = updatedDays[monthIso] || visibleDays[monthIso];
